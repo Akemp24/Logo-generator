@@ -1,6 +1,7 @@
 // use inquirer and call packages needed
 const fs = require('fs');
 const inquirer = require('inquirer');
+const {Triangle, Circle, Square} = require("./shapes");
 
 // Write code for a prompt input
 inquirer.prompt([
@@ -31,6 +32,35 @@ inquirer.prompt([
     }
     
 ])
+
+function generateLogo() {
+    inquirer.prompt(questions).then((answers) => {
+        const {text, textColor, shape, shapeColor} = answers;
+
+        let logoShape;
+        if (shape === "circle") {
+            logoShape = new Circle();
+        } else if (shape === "triangle") {
+            logoShape = new Triangle();
+        } else if (shape === "square") {
+            logoShape = new Square();
+        }
+
+        logoShape.setColor(shapeColor);
+
+        const textSvg = `<text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="${textColor}">${text}</text>`;
+
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">${logoShape.render()}${textSvg}</svg>`;
+
+        fs.writeFile("logo.svg", svg, (err) => {
+            if (err) throw err;
+            console.log("Generated Logo")
+        });
+
+    });
+};
+
+generateLogo();
 
 
 
